@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PICO-8 Style Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background: #000;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+        
+        canvas {
+            border: none;
+            outline: none;
+        }
+        
+        canvas:focus {
+            outline: none;
+        }
+        
+        
+        /* #gameContainer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 512px;
+            height: 512px;
+            border: 2px solid red;
+            outline: none;
+            z-index: 10;
+        } */
+        
+        #tvContainer {
+            position: relative;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            /* border: 2px solid red; */
+            outline: none;
+        }
+        
+        #tvBackground {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            object-fit: contain;
+            /* opacity: 0.8; */
+            z-index: 5;
+        }
+        
+        #gameCanvas {
+            position: absolute;
+            z-index: -1 !important; 
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            background: #000;
+        }
+        
+        #gameInfo {
+            color: #fff;
+            text-align: center;
+            font-size: 24px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        
+        .controls {
+            color: #888;
+            font-size: 18px;
+            text-align: center;
+        }
+        
+        #gameOverOverlay {
+            display: none;
+        }
+        
+        #controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 15px;
+            border: 1px solid #fff;
+            font-family: 'Courier New', monospace;
+            color: #fff;
+        }
+        
+        #controlsTitle {
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 1px solid #fff;
+            padding-bottom: 5px;
+        }
+        
+        #controls label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 8px;
+        }
+        
+        #controls label:last-child {
+            margin-bottom: 0;
+        }
+        
+        #controls input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        #controls input[type="range"] {
+            margin-left: 8px;
+            cursor: pointer;
+            width: 100px;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div id="gameOverOverlay">
+        <div id="gameOverText">GAME OVER</div>
+        <button id="restartButton">Restart</button>
+    </div>
+    <div id="controls" style="display: none;">
+        <div id="controlsTitle">Dev Panel</div>
+        <label>
+            <input type="checkbox" id="scanlinesToggle" checked>
+            <span>Scanlines</span>
+        </label>
+        <label>
+            <input type="checkbox" id="rgbSeparationToggle" checked>
+            <span>RGB Separation</span>
+        </label>
+        <label>
+            <span>Glow: <span id="glowValue">0.99</span></span>
+            <input type="range" id="glowSlider" min="0" max="100" value="99">
+        </label>
+        <label>
+            <span>Vignette: <span id="vignetteValue">0.72</span></span>
+            <input type="range" id="vignetteSlider" min="0" max="100" value="72">
+        </label>
+        <label>
+            <span>Fisheye: <span id="fisheyeValue">0.60</span></span>
+            <input type="range" id="fisheyeSlider" min="0" max="100" value="60">
+        </label>
+        <label>
+            <span>TV Opacity: <span id="tvOpacityValue">1.0</span></span>
+            <input type="range" id="tvOpacitySlider" min="0" max="100" value="100">
+        </label>
+        <label>
+            <span>Canvas H: <span id="canvasHValue">-33</span></span>
+            <input type="range" id="canvasHSlider" min="-100" max="100" value="-33">
+        </label>
+        <label>
+            <span>Canvas V: <span id="canvasVValue">-100</span></span>
+            <input type="range" id="canvasVSlider" min="-100" max="100" value="-100">
+        </label>
+        <label>
+            <span>Canvas Size: <span id="canvasSizeValue">2.00</span></span>
+            <input type="range" id="canvasSizeSlider" min="50" max="200" value="200">
+        </label>
+        <label>
+            <span>Stretch H: <span id="canvasStretchHValue">1.13</span></span>
+            <input type="range" id="canvasStretchHSlider" min="50" max="150" value="113">
+        </label>
+        <label>
+            <span>Stretch V: <span id="canvasStretchVValue">1.04</span></span>
+            <input type="range" id="canvasStretchVSlider" min="50" max="150" value="104">
+        </label>
+        <label>
+            <input type="checkbox" id="pauseToggle">
+            <span>Pause (Esc)</span>
+        </label>
+    </div>
+    <div id="gameContainer">
+    </div>
+    <div id="tvContainer">
+        <img id="tvBackground" alt="TV Background">
+        <canvas id="gameCanvas" width="128" height="128"></canvas>
+    </div>
+        <!-- <div id="gameInfo">
+            <div>PICO-8 Style Game</div>
+            <div class="controls">
+                Arrow Keys: Move | Space: Action
+            </div>
+        </div> -->
+    </div>
+    <audio id="backgroundMusic"></audio>
+    <!-- Script will be automatically injected by HtmlWebpackPlugin -->
+</body>
+</html>
